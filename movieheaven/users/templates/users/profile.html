@@ -1,53 +1,55 @@
 {% extends 'movie/base.html' %}
 
 {% load static %}
-{% block head %}
-<link rel="stylesheet" href="{% static 'users/profile.css' %}">
-{% endblock head %}
-
 {% block title %}
 Profile
 {% endblock %}
 
+{% block head%}
+<style>
+
+    .stack{
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 100px;
+    }
+    .stack div img{
+        width: 140px;
+        border: 1px solid blue;
+        border-radius:70px;
+    }
+
+    .uxdxbutton .username{
+        font-size: 30px;
+        font-weight: bold;
+    }
+    .uxdxbutton{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+
+
+</style>
+{% endblock head %}
+
+
+
 {% block content %}
-<!-- Full-page background with gradient overlay -->
-<div class="container-fluid g-0 vh-100 position-relative">
-    <!-- Background Image -->
-    <img src="{% static 'users/background-red.png' %}" class="img-fluid w-100 h-100 object-fit-cover" alt="Background">
 
-    <!-- Transparent Profile Box -->
-    <div class="position-absolute top-50 start-50 translate-middle w-90 w-md-50 mx-auto p-4 bg-transparent text-white rounded-4 shadow-lg">
-        <div class="row align-items-center">
-            <!-- Profile Image -->
-            <div class="col-md-4 text-center mb-4 mb-md-0">
-                <div class="profile-image-container">
-                    <img src="{{ request.user.profile.image.url }}" class="rounded-circle img-fluid" alt="Profile Image">
-                </div>
-            </div>
-
-            <!-- User Info -->
-            <div class="col-md-8 text-center text-md-start">
-                <h1 class="display-5 fw-bold mb-3">{{ request.user.username|upper }}</h1>
-                <p class="text-muted mb-4">{{ request.user.email }}</p>
-
-                <!-- Stats Section -->
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <div class="fs-5 fw-bold">WATCHED</div>
-                        <div class="fs-4">100</div>
-                    </div>
-                    <div class="col-6">
-                        <div class="fs-5 fw-bold">REVIEWS</div>
-                        <div class="fs-4">100</div>
-                    </div>
-                </div>
-
-                <!-- Edit Profile Button -->
-                <div>
-                    <a href="{% url 'profile-edit' %}" class="btn btn-outline-light btn-lg px-5">Edit Profile</a>
-                </div>
-            </div>
-        </div>
+<div class="stack">
+    <div><img src="{{ request.user.profile.image.url }}"></div>
+    <div class="uxdxbutton">
+        <div class="username">{{request.user.username}}</div>
+        <div>Joined {{ request.user.date_joined|date:"F Y" }}</div>
+        <div><a href="{% url 'profile-edit' %}">Edit</a></div>
     </div>
+    
 </div>
+
+
 {% endblock %}

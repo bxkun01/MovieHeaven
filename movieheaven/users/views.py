@@ -52,7 +52,8 @@ class ProfileUpdateView(UpdateView):
     fields= ['image']
     success_url= reverse_lazy('profile')
 
-    def get_object(self, queryset=None):
+    #defines which model to update **Very much required shit!!!!!!
+    def get_object(self):
         return self.request.user.profile 
 
     def form_valid(self, form):
