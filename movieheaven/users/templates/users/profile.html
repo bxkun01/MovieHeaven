@@ -16,22 +16,43 @@ Profile
         margin-top: 100px;
     }
     .stack div img{
-        width: 140px;
-        border: 1px solid blue;
-        border-radius:70px;
+        width: 100%;
+        height: 100%;
+        object-fit:cover;
+        border-radius: 100px;
+    }
+
+    .uxdxbutton{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+        gap:5px;
     }
 
     .uxdxbutton .username{
         font-size: 30px;
         font-weight: bold;
     }
-    .uxdxbutton{
+
+    .image_{
+        width: 200px;
+        height: 200px;
+        
+    }
+    .count{
         display: flex;
         flex-direction: column;
-        align-items: center;
-        margin-top: 10px;
+        gap:5px;
+        
+        
     }
 
+    .count div{
+        display: flex;
+        justify-content: space-around;
+        gap:50px;
+    }
 
 
 </style>
@@ -42,11 +63,22 @@ Profile
 {% block content %}
 
 <div class="stack">
-    <div><img src="{{ request.user.profile.image.url }}"></div>
+    <div class="image_"><img src="{{ request.user.profile.image.url }}"></div>
     <div class="uxdxbutton">
         <div class="username">{{request.user.username}}</div>
-        <div>Joined {{ request.user.date_joined|date:"F Y" }}</div>
-        <div><a href="{% url 'profile-edit' %}">Edit</a></div>
+        <div><b><i>{{request.user.profile.bio}}</i></b></div>
+        <div>Joined on {{ request.user.date_joined|date:"F Y" }}</div>
+        <div class="count">
+            <div>
+                <div><b>Following</b></div>
+                <div><b>Followers</b></div>
+            </div> 
+            <div>
+                <div>{{ request.user.following.count }}</div>
+                <div>{{ request.user.followers.count }}</div>
+            </div>
+        </div>
+        <div><a href="{% url 'profile-edit' %}"><button>Edit Profile</button></a></div>
     </div>
     
 </div>

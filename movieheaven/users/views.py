@@ -1,10 +1,12 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate,logout,login
 from django.contrib import messages
 from django.views.generic import UpdateView
-from .models import Profile
+from .models import Profile,Follow
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 def register(request):
     if request.method=='POST':
@@ -42,14 +44,17 @@ def user_logout(request):
 
 def members(request):
     members=User.objects.exclude(username=request.user.username)
+    for member in members:
+        member.is_following = Follow.objects.filter(follower=request.user, following=member).exists()
     return render(request, 'users/members.html',{'members':members})
 
-def profile(request):
+@login_required
+def profile(request):    
     return render(request, 'users/profile.html')
 
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     model= Profile
-    fields= ['image']
+    fields= ['bio','image']
     success_url= reverse_lazy('profile')
 
     #defines which model to update **Very much required shit!!!!!!
@@ -59,8 +64,18 @@ class ProfileUpdateView(UpdateView):
     def form_valid(self, form):
        form.instance.user = self.request.user
        return super().form_valid(form)
-
-
-
     
+@login_required
+def follow_user(request, user_id):
+    user_to_follow = get_object_or_404(User, id=user_id)
+    if request.user != user_to_follow:
+        Follow.objects.get_or_create(follower=request.user, following=user_to_follow)
+    return redirect('members')
+
+@login_required
+def unfollow_user(request, user_id):
+    user_to_unfollow = get_object_or_404(User, id=user_id)
+    Follow.objects.filter(follower=request.user, following=user_to_unfollow).delete()
+    return redirect('members')
+        
     

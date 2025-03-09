@@ -29,6 +29,9 @@ urlpatterns = [
     path('members/',views.members, name='members'),
     path('profile/',views.profile, name='profile'),
     path('profile/edit/',views.ProfileUpdateView.as_view(), name='profile-edit'),
+    path('follow/<int:user_id>/', views.follow_user, name='follow_user'),
+    path('unfollow/<int:user_id>/', views.unfollow_user, name='unfollow_user'),
+    
 
 ]
 if settings.DEBUG:
