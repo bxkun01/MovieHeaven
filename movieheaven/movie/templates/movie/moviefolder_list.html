@@ -3,64 +3,157 @@
 {% load static %}
 {% block head %}
 <style>
-    .list{
+    .folder-page {
+        margin-top: 80px; /* Adjust for fixed navbar */
+    }
+
+    .sloganxbutton {
         display: flex;
         flex-direction: column;
-
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 50px;
+        text-align: center; 
     }
-    .folder-image{
-        width: 294px;
+
+    .sloganxbutton button {
+        border: none;
+        border-radius: 3px;
+        background-color: pink;
+        height: 30px;
+        transition: width 0.15s;
+        cursor: pointer;
+    }
+
+    .sloganxbutton button:hover {
+        width: 170px;
+    }
+
+    .slogan {
+        font-size: 25px;
+    }
+
+    .about-folder {
+        text-align: left;
+        font-weight: bold;
+       
+        
+    }
+
+    .lists {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+
+    .list {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+
+    .folder-image {
+        width: 100%;
         height: 229px;
+        border-radius: 10px;
+        transition: border 0.15s;
     }
 
-    .folder-image img{
+    .folder-image:hover {
+        border: 6.1px solid pink;
+    }
+
+    .folder-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 5px;
+    }
+
+    .title {
+        margin-top: 5px;
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 21px;
+        text-align: left;
+    }
+    
+    .title:hover {
+        color: pink;
+    }
+
+    a {
+        text-decoration: none;
+        color: black;
+    }
+
+    .info {
+        display: flex;
+        gap: 9px;
+        cursor: pointer;
+    }
+
+    .user-image {
+        width: 25px;
+        height: 25px;
+    }
+
+    .user-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 15px;
+    }
+
+    .stats-folder {
+        height: 20px;
+        width: 20px;
+    }
+
+    .stats-folder img {
         width: 100%;
         height: 100%;
         object-fit: cover;
     }
-    .info{
-        display: flex;
-        gap: 10px;
+
+    .poster {
+        width: 254px;
+        height: 130px;
     }
-    .title{
+
+    .poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .recent-liked-text {
+        text-align: left;
         font-weight: bold;
     }
-    a{
-        text-decoration: none;
-        color: black;
 
-    }
-    .sloganxbutton{
+    .rencently-liked {
         display: flex;
         flex-direction: column;
-        justify-content: center;  
+        gap: 15px;
+        padding-bottom: 20px;
+        padding-top: 20px;
+    }
+
+    .info-about-folder {
+        display: flex;
+        gap: 10px;
         align-items: center;
-        gap:10px;
-        margin-top: 50px;
-      }
-
-      .sloganxbutton button{
-        border: none;
-        border-radius: 4px;
-        background-color: blue;
-
-      }
-
-    .lists{
-        display: grid;
-        margin-left: 150px;
-        margin-right: 150px;
-        margin-top: 20px;
-        grid-template-columns: 1fr 1fr 1fr;
-        place-items: center;
-        grid-gap: 20px;
+        width: 100%;
     }
 
-    .slogan{
-        font-size: 25px;
+    .zex {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
     }
-    
-
 </style>
 {% endblock head %}
 
@@ -69,60 +162,70 @@ Lists
 {% endblock %}
 
 {% block content %}
-<div class="sloganxbutton">
-    <div class="slogan">Build your ultimate movie collection, one list at a time.</div>
-    <button><a href="{% url 'folder-create' %}">Start your own list</a></button>
+<div class="container">
+    <div class="folder-page">
+        <div class="sloganxbutton">
+            <div class="slogan">Build your ultimate movie collection, one list at a time.</div>
+            <button><a href="{% url 'folder-create' %}">Start your own list</a></button>
+        </div>
+
+        <div class="about-folder">Popular this week</div>
+
+        <div class="lists">
+            {% for folder in folders reversed %}
+            <div class="list">
+                <a href="{% url 'folder-detail' folder.user folder.slug %}">
+                    <div class="folder-image">
+                        <img src="{{ folder.image.url }}">
+                    </div>
+                    <div class="title">{{ folder.title }}</div>
+                </a>
+                <div class="info">
+                    <div class="user-image"><img src="{{ folder.user.profile.image.url }}"></div>
+                    <div>{{ folder.user }}</div>
+                    <div class="stats-folder"><img src="{% static 'movie/images/filled_heart.svg' %}"></div>
+                    <div>10</div>
+                    <div class="stats-folder"><img src="{% static 'movie/images/filled_comment.svg' %}"></div>
+                    <div>10</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="rencently-liked">
+        <div class="recent-liked-text">Recently liked</div>
+        <div class="info-about-folder">
+            <div class="poster"><img src="{% static 'movie/images/wall.png' %}"></div>
+            <div class="zex">
+                <div class="title">Movies that everyone should watch! Even when the night turns gray!</div>
+                <div class="info">
+                    <div class="user-image"><img src="{% static 'movie/images/wall.png' %}"></div>
+                    <div>aedan</div>
+                    <div class="stats-folder"><img src="{% static 'movie/images/filled_heart.svg' %}"></div>
+                    <div>10</div>
+                    <div class="stats-folder"><img src="{% static 'movie/images/filled_comment.svg' %}"></div>
+                    <div>10</div>
+                </div>
+                <div>Hello this is something somethingsome</div>
+            </div>
+        </div>
+
+        <div class="info-about-folder">
+            <div class="poster"><img src="{% static 'movie/images/wall.png' %}"></div>
+            <div class="zex">
+                <div class="title">Movies that everyone should watch! Even when the night turns gray!</div>
+                <div class="info">
+                    <div class="user-image"><img src="{% static 'movie/images/wall.png' %}"></div>
+                    <div>aedan</div>
+                    <div class="stats-folder"><img src="{% static 'movie/images/filled_heart.svg' %}"></div>
+                    <div>10</div>
+                    <div class="stats-folder"><img src="{% static 'movie/images/filled_comment.svg' %}"></div>
+                    <div>10</div>
+                </div>
+                <div>Hello this is something somethingsome</div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<div class="lists">
-    <div class="list">
-        <div class="folder-image">
-            <img src="{% static 'movie/images/wall.png' %}">
-        </div>
-        <div class="title">Movies that every one should watch!</div>
-        <div class="info">
-            <div>aedan</div>
-            <div>comments</div>
-        </div>
-    </div>
-
-    <div class="list">
-        <div class="folder-image">
-            <img src="{% static 'movie/images/wall.png' %}">
-        </div>
-        <div class="title">Movies that every one should watch!</div>
-        <div class="info">
-            <div>aedan</div>
-            <div>comments</div>
-        </div>
-    </div>
-
-    <div class="list">
-        <div class="folder-image">
-            <img src="{% static 'movie/images/wall.png' %}">
-        </div>
-        <div class="title">Movies that every one should watch!</div>
-        <div class="info">
-            <div>aedan</div>
-            <div>comments</div>
-        </div>
-    </div>
-
-    <div class="list">
-        <div class="folder-image">
-            <img src="{% static 'movie/images/wall.png' %}">
-        </div>
-        <div class="title">Movies that every one should watch!</div>
-        <div class="info">
-            <div>aedan</div>
-            <div>comments</div>
-        </div>
-    </div>
-
-    
-
-    
-</div>
-
-
 {% endblock content %}

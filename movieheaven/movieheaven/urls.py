@@ -24,13 +24,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('movie.urls')),
     path('login/',views.user_login,name='login'),
-    path('login/',views.user_logout,name='logout'),
+    path('logout/',views.user_logout,name='logout'),
     path('register/',views.register, name='register'),
     path('members/',views.members, name='members'),
     path('profile/',views.profile, name='profile'),
     path('profile/edit/',views.ProfileUpdateView.as_view(), name='profile-edit'),
     path('follow/<int:user_id>/', views.follow_user, name='follow_user'),
     path('unfollow/<int:user_id>/', views.unfollow_user, name='unfollow_user'),
+    path('<int:user_id>/profile/',views.users_profile, name='user-profile'),
     
 
 ]

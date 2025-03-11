@@ -1,8 +1,9 @@
 from django.shortcuts import render,redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView,DetailView, CreateView
+from django.views.generic import ListView,DetailView, CreateView, DeleteView
 from .models import Movie,Comment, MovieFolder
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def home(request):
     return render(request, 'movie/home.html')
@@ -14,11 +15,9 @@ class MovieListView(ListView):
     
 def search(request):
     searched = request.GET.get('searched', '')
-    words= searched.split()
-
-
+    
     if searched:
-        films = Movie.objects.filter(title__iexact=words)
+        films = Movie.objects.filter(title__iexact=searched)
     else:
         films = []
     return render(request, 'movie/film_search.html', {'films': films})
@@ -42,9 +41,9 @@ def commentdelete(request, pk):
         return redirect(request.META.get('HTTP_REFERER', '/'))
     
 
-class FolderCreateView(CreateView):
+class FolderCreateView(LoginRequiredMixin,CreateView):
     model = MovieFolder
-    fields= ['title']
+    fields= ['title','description','image']
     success_url= reverse_lazy('lists')
 
     def form_valid(self, form):
@@ -54,6 +53,19 @@ class FolderCreateView(CreateView):
 class FolderListview(ListView):
     model= MovieFolder
     context_object_name='folders'
+
+class FolderDetailView(DetailView):
+    model=MovieFolder
+    context_object_name='folder'
+
+def folderdelete(request,slug):
+    folder= MovieFolder.objects.get(slug=slug)
+    if request.user==folder.user:   
+        folder.delete()
+    return redirect(request.META.get('HTTP_REFERER','/'))
+
+
+
 
 
 

@@ -1,0 +1,17 @@
+{% extends 'movie/base.html' %}
+
+{% block title %}
+{{folder.title}}
+{% endblock title %}
+
+{% block head %}
+
+{% endblock head %}
+
+{% block content %}
+{% if request.user == folder.user %}
+<a href="{% url 'list-delete' folder.slug %}">Delete the folder</a>
+{% else %}
+yahhow minna san!
+{% endif %}
+{% endblock content %}

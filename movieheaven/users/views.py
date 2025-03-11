@@ -41,6 +41,8 @@ def user_login(request):
 
 def user_logout(request):
     logout(request)
+    return redirect('login')
+
 
 def members(request):
     members=User.objects.exclude(username=request.user.username)
@@ -51,6 +53,11 @@ def members(request):
 @login_required
 def profile(request):    
     return render(request, 'users/profile.html')
+
+def users_profile(request,user_id):    
+    obj= User.objects.get(id=user_id)
+    obj.is_following=Follow.objects.filter(follower=request.user, following=obj).exists()
+    return render(request, 'users/users_profile.html',{'obj':obj})
 
 class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     model= Profile

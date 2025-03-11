@@ -29,7 +29,7 @@ Members
                                 <!-- User Info -->
                                 <div class="ms-3 flex-grow-1">
                                     <h6 class="card-title fw-bold mb-1" style="font-size: 16px;">
-                                        <a href="#" class="text-decoration-none text-dark">{{ member.username }}</a>
+                                        <a href="{% url 'user-profile' member.id %}" class="text-decoration-none text-dark">{{ member.username }}</a>
                                     </h6>
                                     <p class="text-muted small mb-0" style="font-size: 14px;">{{ member.followers.count }} followers</p>
                                     <p class="text-muted small mb-0" style="font-size: 14px;">0 reviews</p>

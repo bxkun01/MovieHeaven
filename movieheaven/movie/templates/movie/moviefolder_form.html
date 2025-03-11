@@ -1,21 +1,29 @@
 {% extends 'movie/base.html' %}
-
 {% load static %}
 
 {% block head %}
-
+<style>
+    .form-container {
+        max-width: 400px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin: auto;
+    }
+</style>
 {% endblock head %}
 
 {% block content %}
-<form method="POST">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button type="sumbit">Create</button>
-</form>
-
-
-
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="form-container">
+        <h1>Create Your Own List</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary w-100">Create</button>
+        </form>
+    </div>
+</div>
 {% endblock content %}
-
-
-

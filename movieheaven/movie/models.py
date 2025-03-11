@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import slugify
 
 class Movie(models.Model):
     title= models.CharField(max_length=200)
@@ -24,9 +25,25 @@ class Comment(models.Model):
         return f"Comment by {self.user.username} on {self.movie.title}"
 
 class MovieFolder(models.Model):
-    user= models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user= models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='folders')
+    movie= models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='folders', null=True, blank=True )
     title= models.CharField(max_length=300)
+    description= models.TextField(blank=True, null=True)
+    image= models.ImageField(default='default_folder.png',upload_to='folder_image')
     created_at= models.DateField(auto_now_add=True)
+    slug= models.SlugField(blank=True, null=True)
+
+    class Meta:
+        unique_together = ('user', 'movie') 
+
+    def save(self, *args, **kwargs):
+        if self.slug is None:
+            self.slug=slugify(self.title)
+        super().save(*args, **kwargs)
+    
+
+    def __str__(self):
+        return f"'{self.title}' list by {self.user if self.user else 'Unknown'}"
 
 
     
