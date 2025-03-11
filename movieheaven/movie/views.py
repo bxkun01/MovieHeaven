@@ -62,7 +62,7 @@ def folderdelete(request,slug):
     folder= MovieFolder.objects.get(slug=slug)
     if request.user==folder.user:   
         folder.delete()
-    return redirect(request.META.get('HTTP_REFERER','/'))
+    return redirect('lists')
 
 
 

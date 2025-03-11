@@ -180,6 +180,9 @@
 .share img{
     width: 22px;
 }
+a{
+    text-decoration: none;
+}
 
 </style>
 {% endblock head %}
@@ -258,7 +261,9 @@ Films
                     
                 <div class="userxcomments">
                     <div class="timexusername">
-                        <div class="username">{{comment.user}}</div>
+                        <a href="{% url 'user-profile' comment.user.id %}">
+                            <div class="username">{{comment.user}}</div>
+                        </a>
                         <div class="time-posted">{{ comment.created_at|timesince }}</div>
                     </div>
                     <div class="comment">{{ comment.text }}</div>   

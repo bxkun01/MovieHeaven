@@ -4,7 +4,7 @@
 {% block head %}
 <style>
     .folder-page {
-        margin-top: 80px; /* Adjust for fixed navbar */
+        margin-top: 80px;
     }
 
     .sloganxbutton {
@@ -166,7 +166,13 @@ Lists
     <div class="folder-page">
         <div class="sloganxbutton">
             <div class="slogan">Build your ultimate movie collection, one list at a time.</div>
-            <button><a href="{% url 'folder-create' %}">Start your own list</a></button>
+            <button><a href="{% url 'folder-create' %}">
+            {% if request.user.folders.count > 0 %}
+                Create List 
+            {% else %}
+                Start your own list
+            {% endif %}
+            </a></button>
         </div>
 
         <div class="about-folder">Popular this week</div>

@@ -1,20 +1,17 @@
 {% extends 'movie/base.html' %}
 {% load static %}
+{% block head %}
+    <style>
+    body{
+        background-color:grey;
+    }
+</style>
+{% endblock head%}
 
 {% block content %}
-<!-- Full-page background with overlay -->
-<div class="row g-0 vh-100 position-relative">
-    <!-- Background Image -->
-    <img src="{% static 'movie/images/wall.png' %}" class="img-fluid w-100 h-100 object-fit-cover" alt="Background">
-
-    <!-- Dark Overlay -->
-    <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-75"></div>
-
-    <!-- Centered Content -->
-    <div class="position-absolute top-50 start-50 translate-middle text-center text-white">
+    <div class="position-absolute top-50 start-50 translate-middle text-center text-black">
         <h1 class="display-1 fw-bold mb-4">Welcome to MovieHeaven</h1>
         <p class="lead fs-4 mb-5">Discover the best movies, lists, and reviews</p>
-        <a href="#" class="btn btn-primary btn-lg px-5 py-3">Explore Now</a>
     </div>
 </div>
 {% endblock %}
