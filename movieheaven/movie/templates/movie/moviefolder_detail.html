@@ -10,6 +10,7 @@
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
+        padding-bottom: 40px;
     }
     .movie-list img {
         width: 200px;
@@ -102,14 +103,21 @@
         <h2>{{folder.title}}</h2>
         {% if request.user == folder.user %}
         <a href="{% url 'list-delete' folder.slug %}"><button>Delete</button></a>
+        <a href="{% url 'list-delete' folder.slug %}"><button>Add Movie</button></a>
         {% endif %}
     </div>
     
     <p class="description">{{folder.description}}</p>    
 
+    
     <div class="movie-list">
-        <div><img src="{% static 'movie/images/wall.png' %}"></div>
+        {% for movie in folder.movie.all %}
+            <a href="{% url 'film_detail' movie.id %}">
+                <div><img src="{{ movie.poster.url }}" alt="{{movie.title}}"></div>
+            </a>
+        {% endfor %}
     </div>
+    
     
     <div class="sidebar">
         <div><strong>

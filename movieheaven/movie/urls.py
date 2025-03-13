@@ -15,5 +15,6 @@ urlpatterns=[
     path('lists/',FolderListview.as_view(),name='lists'),
     path('<str:user>/list/<slug:slug>',FolderDetailView.as_view(),name='folder-detail'),
     path('list/<slug:slug>/delete/', views.folderdelete, name='list-delete'),
+    path('add-to-list/',views.addtolist,name='add-to-list'),
 
 ]
