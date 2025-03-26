@@ -3,43 +3,9 @@
 {% load static %}
 {% block head %}
 <style>
-    .folder-page {
-        margin-top: 80px;
-    }
-
-    .slogan {
-        font-size: 25px;
-    }
-
-    .about-folder {
-        font-weight: bold;
-        margin-top: 20px;
-    }
-
-    .folder-image img {
-        width: 100%;
-        height: 229px;
-        border-radius: 10px;
-        object-fit: cover;
-        transition: border 0.15s;
-    }
-
-    .folder-image img:hover {
-        border: 6.1px solid pink;
-    }
-
-    .info {
-        display: flex;
-        gap: 9px;
-        align-items: center;
-        font-size: 14px;
-        color: rgb(102, 102, 102);
-        margin-top: 5px;
-    }
-
     .user-image {
-        width: 40px;
-        height: 40px;
+        width: 50px;
+        height: 50px;
         border-radius: 50%;
         object-fit: cover;
     }
@@ -47,6 +13,62 @@
     .stats-folder {
         width: 16px;
         height: 16px;
+    }
+    
+    /* New styles for the recently added section */
+    .recent-item {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        gap: 15px;
+        text-align: left; /* Force left alignment */
+    }
+    
+    .recent-folder-image {
+        width: 200px;
+        height: 100px;
+        border-radius: 5px;
+        object-fit: cover;
+    }
+    
+    .recent-item-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .recent-item-user {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 5px;
+    }
+    
+    .recent-user-image {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+    
+    .recent-item-stats {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-top: 5px;
+    }
+    
+    .recent-stats-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .folder-content {
+        text-align: center;
+    }
+    
+    .recent-list-container {
+        text-align: left;
     }
 </style>
 {% endblock head %}
@@ -57,61 +79,80 @@ Lists
 
 {% block content %}
 <div class="container">
-    <div class="folder-page text-center">
-        <div class="mb-4">
-            <h2 class="slogan">Build your ultimate film collection, one list at a time.</h2>
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'folder-create' %}" class="btn btn-primary">
-                {% if request.user.folders.count > 0 %}
-                    Create List
+    <div class="folder-page">
+        <div class="folder-content"> <!-- New wrapper for centered content -->
+            <div class="mb-4">
+                <h2 class="slogan">Build your ultimate film collection, one list at a time.</h2>
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'folder-create' %}" class="btn btn-primary">
+                    {% if request.user.folders.count > 0 %}
+                        Create List
+                    {% else %}
+                        Start your own list
+                    {% endif %}
+                </a>
                 {% else %}
-                    Start your own list
+                <p><a class="text-primary text-decoration-underline" href="{% url 'register' %}">Register</a> to create a list</p>
                 {% endif %}
-            </a>
-            {% else %}
-            <p><a class="text-primary text-decoration-underline" href="{% url 'register' %}">Register</a> to create a list</p>
-            {% endif %}
-        </div>
+            </div>
 
-        <h4 class="about-folder">Popular this week</h4>
+            <h4 class="about-folder">Popular this week</h4>
 
-        <div class="row g-4">
-            {% for folder in folders %}
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <a href="{% url 'folder-detail' folder.user folder.slug %}">
-                        <img src="{{ folder.image.url }}" class="card-img-top" loading="lazy">
-                    </a>
-                    <div class="card-body">
-                        <h5 class="card-title">{{ folder.title }}</h5>
-                        <div class="d-flex align-items-center gap-2">
-                            <a href="{% url 'user-profile' folder.user.pk %}">
-                                <img src="{{ folder.user.profile.image.url }}" class="user-image">
-                            </a>
-                            <a href="{% url 'user-profile' folder.user.pk %}" class="text-muted text-decoration-none">{{ folder.user }}</a>
-                            <img src="{% static 'movie/images/filled_heart.svg' %}" class="stats-folder">
-                            <span class="text-muted">{{ folder.like_count }}</span>
-                            <img src="{% static 'movie/images/filled_comment.svg' %}" class="stats-folder">
-                            <span class="text-muted">0</span>
+            <div class="row g-4">
+                {% for folder in folders %}
+                <div class="col-md-4">
+                    <div class="card shadow-sm">
+                        <a href="{% url 'folder-detail' folder.user folder.slug %}">
+                            <img src="{{ folder.image.url }}" class="card-img-top" loading="lazy">
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">{{ folder.title }}</h5>
+                            <div class="d-flex align-items-center gap-2">
+                                <a href="{% url 'user-profile' folder.user.pk %}">
+                                    <img src="{{ folder.user.profile.image.url }}" class="user-image">
+                                </a>
+                                <a href="{% url 'user-profile' folder.user.pk %}" class="text-muted text-decoration-none">{{ folder.user }}</a>
+                                <img src="{% static 'movie/images/filled_heart.svg' %}" class="stats-folder">
+                                <span class="text-muted">{{ folder.like_count }}</span>
+                                <img src="{% static 'movie/images/filled_comment.svg' %}" class="stats-folder">
+                                <span class="text-muted">0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
 
-        <h4 class="about-folder mt-5">Recently Added</h4>
-        <ul class="list-group">
-            {% for recent in recents %}
-            <li class="list-group-item d-flex align-items-center">
-                <img src="{{ recent.image.url }}" class="rounded me-3" style="width: 80px; height: 50px; object-fit: cover;">
-                <div>
-                    <h6 class="mb-1">{{ recent.title }}</h6>
-                    <a href="{% url 'profile' recent.user.username %}" class="text-muted text-decoration-none">By {{ recent.user }}</a>
+        <div class="recent-list-container"> <!-- New wrapper for left-aligned recent items -->
+            <h4 class="about-folder mt-5">Recently Added</h4>
+            <div class="list-group">
+                {% for folder in recent %}
+                <div class="list-group-item recent-item">
+                    <a href="{% url 'folder-detail' folder.user folder.slug %}">
+                        <img src="{{ folder.image.url }}" class="recent-folder-image">
+                    </a>
+                    <div class="recent-item-content">
+                        <h6 class="mb-1">{{ folder.title }}</h6>
+                        <div class="recent-item-user">
+                            <img src="{{ folder.user.profile.image.url }}" class="recent-user-image">
+                            <a href="{% url 'user-profile' folder.user.pk %}" class="text-muted text-decoration-none">{{ folder.user }}</a>
+                        </div>
+                        <div class="recent-item-stats">
+                            <span>
+                                <img src="{% static 'movie/images/filled_heart.svg' %}" class="recent-stats-icon">
+                                {{ folder.like_count }}
+                            </span>
+                            <span>
+                                <img src="{% static 'movie/images/filled_comment.svg' %}" class="recent-stats-icon">
+                                0
+                            </span>
+                        </div>
+                    </div>
                 </div>
-            </li>
-            {% endfor %}
-        </ul>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
 {% endblock content %}

@@ -194,6 +194,15 @@
     a{
         text-decoration: none;
     }
+    .xdt{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .xdt a{
+        font-size: 20px;
+        color:blue;
+    }
 
 </style>
 {% endblock head %}
@@ -205,7 +214,14 @@ Films &#8226; {{movie.title}}
 {% block content %}
 <div class="movie-page-container">
     <div class="movie-container">
-    <div class="movie-title">{{ movie.title }}</div> 
+    {% if request.user.is_superuser %}
+        <div class="xdt">
+            <div class="movie-title">{{ movie.title }} </div>
+            <div><a href="{% url 'movie-edit' movie.pk %}">Edit</a></div> 
+        </div>
+    {% else %}
+        <div class="movie-title">{{ movie.title }} </div>
+    {% endif %}
     {% if messages %}
     <p style="color:blue;">
         {% for message in messages %}
@@ -307,5 +323,6 @@ Films &#8226; {{movie.title}}
         {% endif %}
     </div>
 </div>
+
 
 {% endblock %}

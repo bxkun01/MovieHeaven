@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
-from django.views.generic import ListView,DetailView, CreateView, DeleteView
+from django.views.generic import ListView,DetailView, CreateView, DeleteView, UpdateView
 from .models import Movie,Comment, MovieFolder, Like
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -54,7 +54,7 @@ class FolderCreateView(LoginRequiredMixin,CreateView):
         form.instance.user= self.request.user
         return super().form_valid(form)
 
-class PopularFolderListview(ListView):
+class FolderListview(ListView):
     model= MovieFolder
     context_object_name='folders'
 
@@ -62,6 +62,14 @@ class PopularFolderListview(ListView):
         return MovieFolder.objects.annotate(
                 total_likes=Count('likes')
             ).order_by('-total_likes')[:3]
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        queryset = MovieFolder.objects.all().order_by('-created_at')[:3] 
+
+        context['recent'] = queryset
+        return context
 
 class FolderDetailView(DetailView):
     model=MovieFolder
@@ -121,7 +129,6 @@ class PopularList(ListView):
 
 
 
-
 class MovieCreateView(UserPassesTestMixin,CreateView):
     model= Movie
     fields='__all__'
@@ -136,6 +143,18 @@ class MovieCreateView(UserPassesTestMixin,CreateView):
     
     '''or can do this instead of handle_no_permission:
      raise_exception = True '''
+
+class MovieUpdateView(UserPassesTestMixin, UpdateView):
+    model=Movie
+    fields='__all__'
+    template_name= 'movie/movie_edit.html'
+
+
+    def test_func(self):
+        return self.request.user.is_superuser  #returns true giving permission to superuseronly
+
+    def handle_no_permission(self): 
+        return redirect('home')
     
 
 
