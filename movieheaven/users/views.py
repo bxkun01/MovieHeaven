@@ -43,7 +43,7 @@ def user_logout(request):
     logout(request)
     return redirect('login')
 
-
+@login_required
 def members(request):
     members=User.objects.exclude(username=request.user.username)
     for member in members:

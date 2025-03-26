@@ -1,10 +1,11 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView,DetailView, CreateView, DeleteView
-from .models import Movie,Comment, MovieFolder
+from .models import Movie,Comment, MovieFolder, Like
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
+from django.db.models import Count
 
 def home(request):
     return render(request, 'movie/home.html')
@@ -13,12 +14,14 @@ class MovieListView(ListView):
     model= Movie
     template_name='movie/film_list.html'
     context_object_name= 'films'
+    ordering=['-title']
+    paginate_by=10
     
 def search(request):
     searched = request.GET.get('searched', '')
     
     if searched:
-        films = Movie.objects.filter(title__iexact=searched)
+        films = Movie.objects.filter(title__icontains=searched)
     else:
         films = []
     return render(request, 'movie/film_search.html', {'films': films})
@@ -51,9 +54,14 @@ class FolderCreateView(LoginRequiredMixin,CreateView):
         form.instance.user= self.request.user
         return super().form_valid(form)
 
-class FolderListview(ListView):
+class PopularFolderListview(ListView):
     model= MovieFolder
     context_object_name='folders'
+
+    def get_queryset(self):
+        return MovieFolder.objects.annotate(
+                total_likes=Count('likes')
+            ).order_by('-total_likes')[:3]
 
 class FolderDetailView(DetailView):
     model=MovieFolder
@@ -69,7 +77,6 @@ def folderdelete(request,slug):
 
 def addtolist(request):
     if request.method == "POST":
-        # First time receiving movie_id
         movie_id = request.POST.get('movie_id')
         
         if movie_id:  
@@ -78,20 +85,13 @@ def addtolist(request):
 
         # Get movie_id from session if not in request
         movie_id = request.session.get('movie_id')
-        
-        # If we still don't have movie_id, show an error
-        if not movie_id:
-            messages.error(request, "Movie ID is missing!")
-            return redirect('some-error-page')
 
-        # Try to fetch the movie object
         movie = get_object_or_404(Movie, id=movie_id)
 
-        # If user has selected a list, process the submission
         list_id = request.POST.get('movie_folder_id')
         if list_id:
             folder = MovieFolder.objects.get(id=list_id, user=request.user)
-            folder.movie.add(movie)  # Add the movie to the folder
+            folder.movie.add(movie)
             messages.success(request, f"'{movie.title}' added to '{folder.title}'.")
             return redirect('film_detail', pk=movie.id)
 
@@ -102,6 +102,49 @@ def addtolist(request):
             return render(request, 'movie/user_list.html', {'lists': None, 'movie': movie})
 
         return render(request, 'movie/user_list.html', {'lists': lists, 'movie': movie})
+    
+
+def likes(request,pk):
+    folder= MovieFolder.objects.get(id=pk)
+    like, created = Like.objects.get_or_create(user=request.user, folder=folder)
+
+    if  not created:  
+        like.delete()
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+class PopularList(ListView):
+    model= MovieFolder
+    template_name='moviefolder_list.html'
+
+    #def get_queryset(self):
+    #    return MovieFolder.objects.filter()
+
+
+
+
+class MovieCreateView(UserPassesTestMixin,CreateView):
+    model= Movie
+    fields='__all__'
+    success_url= reverse_lazy('film_list')
+    template_name= 'movie/movie_create.html'
+
+    def test_func(self):
+        return self.request.user.is_superuser  #returns true giving permission to superuseronly
+
+    def handle_no_permission(self): 
+        return redirect('home')
+    
+    '''or can do this instead of handle_no_permission:
+     raise_exception = True '''
+    
+
+
+
+
+    
+
+            
+        
     
     
 

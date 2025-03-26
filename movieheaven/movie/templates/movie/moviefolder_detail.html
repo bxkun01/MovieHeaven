@@ -13,8 +13,8 @@
         padding-bottom: 40px;
     }
     .movie-list img {
-        width: 200px;
-        height: 300px;
+        width: 129px;
+        height: 191px;
         object-fit: cover;
         border-radius: 5px;
     }
@@ -26,9 +26,9 @@
         position: absolute;
         right: 20px;
         top: 100px;
-        width: 270px;
+        width: 260px;
         color:white;
-        padding: 20px;
+        padding: 15px;
         border-radius: 5px;
         font-size: 16px;
     }
@@ -36,7 +36,7 @@
         padding: 10px;
         border-bottom: 1px solid black;
     }
-    .sidebar div:hover {
+    .sidebar div:hover, a:hover {
         color: blue;
         cursor: pointer;
     }
@@ -49,7 +49,7 @@
 
     .description {
         width: 1110px;
-        font-size: 20px;
+        font-size: 18px;
         line-height: 1.5;
     }
 
@@ -89,7 +89,15 @@
         align-items: center;
         
     }
-
+    a{
+        color:white;
+        text-decoration: none;
+    }
+    .title{
+        font-size: 22px;
+        font-weight: bold;
+        overflow-wrap: break-word ;
+    }
 </style>
 {% endblock head %}
 
@@ -100,10 +108,10 @@
         <p class="creator-info">List by <strong>{{ folder.user.username }}</strong> | Created {{ folder.created_at }}</p>
     </div>
     <div class="x">
-        <h2>{{folder.title}}</h2>
+        <span class="title">{{folder.title}}</span>
         {% if request.user == folder.user %}
         <a href="{% url 'list-delete' folder.slug %}"><button>Delete</button></a>
-        <a href="{% url 'list-delete' folder.slug %}"><button>Add Movie</button></a>
+        <a href="#"><button>Add Movie</button></a>
         {% endif %}
     </div>
     
@@ -122,13 +130,17 @@
     <div class="sidebar">
         <div><strong>
             {% if request.user.is_authenticated %}
-                Create list
+                <a href="{% url 'folder-create' %}">Create list</a>
             {% else %}
                 Sign in to create or like list
             {% endif %}
         </strong></div>
-        
-        <div><strong>8,229 likes</strong></div>
+        {% if request.user.is_authenticated %}
+            <div><strong><a href="{% url 'like' folder.id %}"> {{folder.like_count}} likes</strong></div>
+        {% else %}
+            <div><strong> {{folder.like_count}} likes</strong></div>
+        {% endif %}
+
         <div><strong>Share</strong></div>
     </div>
 </div>

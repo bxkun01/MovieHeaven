@@ -11,11 +11,16 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item"><a class="nav-link" href="{% url 'film_list' %}">FILMS</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'lists' %}">LISTS</a></li>
-                <li class="nav-item"><a class="nav-link" href="{% url 'members' %}">MEMBERS</a></li>
+                {% if request.user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'members' %}">MEMBERS</a></li>
+                {% endif %}
                 <li class="nav-item"><a class="nav-link" href="#">JOURNAL</a></li>
+                {% if request.user.is_superuser %}
+                <li class="nav-item"><a class="nav-link" href="{% url 'movie-create' %}">+ Movies</a></li>
+                {% endif %}
             </ul>
 
-            <!-- Right side of the navbar items (Search form, Profile, Logout) -->
+            
             <div class="d-flex ms-auto">
                 <!-- Search form -->
                 <form method="GET" action="{% url 'film-search' %}" class="d-flex me-2">
@@ -25,7 +30,7 @@
                     </button>
                 </form>
 
-                <!-- Authentication links (Profile, Logout, Sign In, Create Account) -->
+                
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'profile' %}">PROFILE</a></li>

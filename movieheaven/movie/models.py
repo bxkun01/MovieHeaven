@@ -27,7 +27,7 @@ class Comment(models.Model):
 class MovieFolder(models.Model):
     user= models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='folders')
     movie= models.ManyToManyField(Movie, related_name='folders',blank=True )
-    title= models.CharField(max_length=300)
+    title= models.CharField(max_length=80)
     description= models.TextField(blank=True, null=True)
     image= models.ImageField(default='default_folder.png',upload_to='folder_image')
     created_at= models.DateField(auto_now_add=True)
@@ -42,6 +42,20 @@ class MovieFolder(models.Model):
 
     def __str__(self):
         return f"'{self.title}' list by {self.user if self.user else 'Unknown'}"
+    
+    @property
+    def like_count(self):
+        return self.likes.count() 
+
+
+
+class  Like(models.Model):
+    user= models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    folder=models.ForeignKey(MovieFolder, on_delete=models.CASCADE, related_name='likes', null=True, blank=True)
+
+    class Meta:
+        unique_together = ('user', 'folder') 
+
 
 
     

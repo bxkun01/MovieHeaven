@@ -199,7 +199,7 @@
 {% endblock head %}
 
 {% block title %}
-Films
+Films &#8226; {{movie.title}}
 {% endblock %}
 
 {% block content %}
@@ -230,6 +230,7 @@ Films
                 <a href="#"><img src="{% static 'movie/images/twitter.png' %}"></a>
             </div>
             <button>Watch Trailer</button>
+            {% if request.user.is_authenticated %}
             <form method="POST" action="{% url 'add-to-list' %}">
                 {% csrf_token %}
                 <input type="hidden" name="movie_id" value="{{ movie.id }}">
@@ -237,7 +238,9 @@ Films
                     Add to List
                 </button>
             </form>  
+            {% endif %}
         </div>
+        
         <div class="about-movie">
             <div><p>{{ movie.description }}</p></div>
             <div><b>Genre:</b> {{ movie.genre }}</div>
@@ -251,11 +254,13 @@ Films
             <div>Write Review</div>
         </div>
     </div>
-
+    
     <div class="comments">
         <div><b>Comments ({{movie.comments.all|length}})</b></div>
         <div class="user-comment">
+            {% if request.user.is_authenticated %}
             <img src="{{ request.user.profile.image.url }}">
+
             <div class="comment-form">
                 <form method="POST" action="{% url 'film_detail' pk=movie.pk %}" name="sfd">
                     {% csrf_token %}
@@ -263,6 +268,11 @@ Films
                     <button type="submit">Post</button>
                 </form>
             </div>
+            {% else %}
+            <span style="color:red; font-size: 19px;"><a style="text-decoration: underline;" href="{% url 'login' %}">Login</a> to comment </span>
+            {% endif  %}
+            
+           
         </div>
         {% if not movie.comments.all %}
         <div class="no-comment">
