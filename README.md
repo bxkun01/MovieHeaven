@@ -1,0 +1,1 @@
+MovieHeaven is an online movie list website similar to Letterboxd, where users can create and manage their movie lists. Users can register, authenticate, create lists, add movies to lists, follow other users, and personalize their profiles.
